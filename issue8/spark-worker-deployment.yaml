@@ -1,0 +1,32 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: spark-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-worker
+  template:
+    metadata:
+      labels:
+        app: spark-worker
+    spec:
+      containers:
+        - name: spark-worker
+          image: bde2020/spark-worker
+          ports:
+            - containerPort: 8081
+            - containerPort: 7078
+          resources:
+            requests:
+              cpu: 100m
+          env:
+            - name: SPARK_MASTER
+              value: "spark://spark-master-service:7077"
+            - name: MASTER_HOST
+              value: "spark-master-service"
+            - name: MASTER_IP
+              value: "1.1.1.1"
+            - name: PYSPARK_PYTHON
+              value: "python3"

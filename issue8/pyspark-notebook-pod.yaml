@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pyspark-notebook
+  labels:
+    app : pyspark-notebook
+spec:
+  containers:
+  - name: pyspark-notebook
+    image: jupyter/pyspark-notebook:ubuntu-18.04
+    workingDir: /home/jovyan/work
+    command: ["start-notebook.sh"]
+    args: ["--NotebookApp.port=8889","--NotebookApp.token=''","--NotebookApp.password=''"]
+    ports:
+      - name: notebook
+        containerPort: 8889
+      - name: webui0
+        containerPort: 4040
+      - name: communication
+        containerPort: 4041
+    env:
+      - name: PYSPARK_PYTHON
+        value: "python3"
+    volumeMounts:
+      - mountPath: "/home/jovyan/work"
+        name: storage
+  volumes:
+    - name: storage
+      persistentVolumeClaim:
+        claimName: claim
